@@ -247,11 +247,43 @@ PostgreSQL 16 + PostGIS, Redis 7, Spring Boot 앱
 
 ## 추가 요구사항
 - CORS: 모든 Origin 허용 (Unity WebGL 및 로컬 개발 대응)
-- 기상 스케줄러: @Scheduled(cron = "0 0 * * * *") 로 1시간마다 실행
-  실제 API 호출 대신 우선 Mock 데이터 반환하는 구조로 구현
-  (추후 실제 공공데이터 API로 교체 예정)
 - Bulk 적재 시 saveAll() 사용해서 DB 왕복 최소화
 - 패키지명: com.safesail.collector
 - 빌드 도구: Gradle (Kotlin DSL)
+
+## 구현 현황 (2026-06-12)
+
+### 완성
+- 전체 API 엔드포인트 (세션·텔레메트리·환경·리포트)
+- Docker Compose (PostgreSQL+PostGIS 16, Redis 7, Spring Boot)
+- Flyway 마이그레이션 V1__init.sql
+
+### 미구현 — 우선순위 순
+
+#### P1: WeatherScheduler 공공 API 실연동
+현재 `WeatherScheduler.collectWeatherData()`가 하드코딩 Mock 데이터 반환 중.
+아래 공공 API로 교체 필요:
+
+| API | 제공 기관 | 데이터 | 키 발급 |
+|---|---|---|---|
+| 해양기상 부이 관측 API | 기상청 (공공데이터포털) | 파고(WH)·풍속(WS)·풍향(WD) | data.go.kr |
+| 조위관측 API | 국립해양조사원 (바다누리) | tideLevel (cm) | khoa.go.kr |
+| 단기예보 API | 기상청 (공공데이터포털) | 시정(visibility) | data.go.kr |
+
+구현 방향:
+- `application.yml`에 API 키 환경변수 추가 (`PUBLIC_API_KEY_KMA`, `PUBLIC_API_KEY_KHOA`)
+- `WeatherApiClient` 인터페이스 + 구현체 분리 (테스트 교체 용이)
+- 부이 관측소는 시뮬레이션 좌표(부산항 기준 35.1N 129.0E)에서 최근접 관측소 고정
+- API 실패 시 이전 캐시값 유지 (fallback)
+
+#### P5: EvaluationService — 세션 종료 트리거
+`SessionService.endSession()` 완료 시 `evaluation_results` 자동 생성.
+채점 로직:
+- `collisionCount` = event_logs WHERE event_type = 'COLLISION_WARNING'
+- `speedingCount` = event_logs WHERE event_type = 'SPEEDING'
+- `routeDeviationCount` = event_logs WHERE event_type = 'ROUTE_DEVIATION'
+- `groundingRiskCount` = event_logs WHERE event_type = 'GROUNDING_WARNING'
+- `totalScore` = 100 - (collision*20 + speeding*5 + deviation*10 + grounding*15)
+- `passed` = totalScore >= 60
 ```
 

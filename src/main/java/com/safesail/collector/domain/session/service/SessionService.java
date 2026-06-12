@@ -1,5 +1,6 @@
 package com.safesail.collector.domain.session.service;
 
+import com.safesail.collector.domain.report.service.EvaluationService;
 import com.safesail.collector.domain.session.dto.CreateSessionRequest;
 import com.safesail.collector.domain.session.dto.CreateSessionResponse;
 import com.safesail.collector.domain.session.dto.EndSessionRequest;
@@ -19,6 +20,7 @@ public class SessionService {
 
     private final SessionRepository sessionRepository;
     private final CacheService cacheService;
+    private final EvaluationService evaluationService;
 
     @Transactional
     public CreateSessionResponse createSession(CreateSessionRequest request) {
@@ -39,5 +41,9 @@ public class SessionService {
                 .orElseThrow(() -> new NoSuchElementException("Session not found: " + sessionId));
         session.setStatus(request.status());
         session.setEndedAt(OffsetDateTime.now());
+
+        if ("COMPLETED".equals(request.status())) {
+            evaluationService.evaluate(session);
+        }
     }
 }
