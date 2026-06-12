@@ -1,11 +1,13 @@
 spring:
   application:
     name: safesail-collector
+
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5434/safesail}
     username: ${DB_USERNAME:safesail}
     password: ${DB_PASSWORD:safesail}
     driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: validate
@@ -13,9 +15,11 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
+
   flyway:
     enabled: true
     locations: classpath:db/migration
+
   data:
     redis:
       host: ${REDIS_HOST:localhost}
@@ -28,4 +32,30 @@ springdoc:
     path: /v3/api-docs
 
 server:
-  port: 8080
+  port: ${APP_PORT:8080}
+
+# =========================
+# 국립해양조사원(KHOA)
+# =========================
+khoa:
+  api-key: ${KHOA_API_KEY}
+  base-url: ${KHOA_API_URL}
+
+# =========================
+# 기상청(KMA)
+# =========================
+kma:
+  service-key: ${KMA_API_KEY}
+  base-url: ${KMA_API_URL}
+
+# =========================
+# Weather Scheduler
+# =========================
+weather:
+  cache-ttl-minutes: 60
+  scheduler-cron: "* * * * * *"
+
+logging:
+  level:
+    root: INFO
+    com.safesail: DEBUG

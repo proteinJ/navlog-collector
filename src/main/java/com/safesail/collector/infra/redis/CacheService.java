@@ -47,4 +47,13 @@ public class CacheService {
                 4, TimeUnit.HOURS
         );
     }
+
+    public void updateWeatherCache(Map<String, String> data) {
+        if (data.isEmpty()) {
+            return;
+        }
+
+        redisTemplate.opsForHash().putAll(WEATHER_CACHE_KEY, data);
+        redisTemplate.expire(WEATHER_CACHE_KEY, 24, TimeUnit.HOURS);
+    }
 }
