@@ -3,8 +3,7 @@ package com.safesail.collector.infra.weather;
 public record WeatherObservation(
         Double waveHeight,
         Double windSpeed,
-        Double windDirection,
-        Integer tideLevel
+        Double windDirection
 ) {
 }
 /*

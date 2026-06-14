@@ -63,15 +63,14 @@ public class KmaWeatherApiClient implements WeatherApiClient{
         String[] values = dataLine.split("\\s+");
 
         Double windDirection = Double.parseDouble(values[2]);
-        Double windSpeed = 30.0;//Double.parseDouble(values[3]);
-        Double waveHeight =100.0;// Double.parseDouble(values[13]);
+        Double windSpeed = Double.parseDouble(values[3]);
+        Double waveHeight = Double.parseDouble(values[13]);
 
         return new WeatherObservation(
                 waveHeight,
                 windSpeed,
-                windDirection,
-                null
-        );
+                windDirection
+        ); // tideLevel을 따로 관리하고 있어 제거
 
     }
 

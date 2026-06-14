@@ -52,6 +52,30 @@ kma:
   base-url: ${KMA_API_URL}
 
 # =========================
+# 국립해양조사원 수심
+# =========================
+depth:
+  api-key: ${DEPTH_API_KEY}
+  base-url: ${DEPTH_API_URL:https://apis.data.go.kr/1192136/waterDepth/GetWaterDepthApiService}
+  #수심 API의 페이지당 최대 조회 개수
+  page-size: 300
+
+# =========================
+# Marine Simulation Area
+# =========================
+simulation:
+  marine:
+    #원점으로 사용하는 거제도 부이 좌표 (향후 수정 사항)
+    origin-lat: ${GEOJE_BUOY_LAT:34.7667}
+    origin-lon: ${GEOJE_BUOY_LON:128.9000}
+    #거제도 부이 좌표 기준 반지름 5km
+    radius-meters: 5000
+    #수심 API 갱신 주기, 변하지 않는 API이기 때문에 7일로 잡음
+    depth-cache-ttl: ${DEPTH_CACHE_TTL:168h}
+    #API 장애 발생 시 재호출 대기 시간
+    depth-refresh-retry-delay: ${DEPTH_REFRESH_RETRY_DELAY:1h}
+
+# =========================
 # Weather Scheduler
 # =========================
 weather:

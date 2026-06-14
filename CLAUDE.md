@@ -78,6 +78,12 @@ POST /api/v1/environment/marine/manual
 - Redis weather:manual 에 저장
 - enabled: false 시 오버라이드 해제
 
+GET /api/v1/environment/bathymetry
+- 거제도 해양기상부이(34.7667, 128.9000)를 Unity 원점으로 사용
+- 반경 5km를 포함하는 bbox로 수심 API를 조회한 뒤 실제 거리 5km 이내 데이터만 반환
+- 경도 차이는 Unity X, 위도 차이는 Unity Z로 변환
+- depth와 tideLevelMeter는 별도 필드이며 effectiveDepth = depth + tideLevelMeter
+
 ### 2. 훈련 세션
 POST /api/v1/sessions
 - 요청:
@@ -232,6 +238,7 @@ CREATE TABLE evaluation_results (
 - weather:cache     → Hash, TTL 1시간 (배치 수집값)
 - weather:manual    → Hash, TTL 없음 (수동 오버라이드)
 - session:active:{clientId} → String (진행 중 sessionId), TTL 4시간
+- bathymetry:geoje:dataset:v1 → String(JSON), TTL 없음 (7일마다 갱신, API 실패 시 이전 데이터 fallback)
 
 ## Docker Compose
 PostgreSQL 16 + PostGIS, Redis 7, Spring Boot 앱
@@ -254,4 +261,3 @@ PostgreSQL 16 + PostGIS, Redis 7, Spring Boot 앱
 - 패키지명: com.safesail.collector
 - 빌드 도구: Gradle (Kotlin DSL)
 ```
-
