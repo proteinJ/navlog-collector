@@ -31,6 +31,9 @@ public class WeatherScheduler {
             put(updates, "waveHeight", weather.waveHeight());
             put(updates, "windSpeed", weather.windSpeed());
             put(updates, "windDirection", weather.windDirection());
+            put(updates, "waveDirection", weather.waveDirection());
+            put(updates, "wavePeriod", weather.wavePeriod());
+
         } catch (Exception e) {
             log.warn("KMA API 호출 실패", e);
         }

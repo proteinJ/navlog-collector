@@ -23,7 +23,7 @@ public class EnvironmentService {
         if (!cache.isEmpty()) {
             return toResponse(cache, false);
         }
-        return new MarineEnvironmentResponse(1.5, 5.0, 270.0, 8.0, 120, false);
+        throw new IllegalStateException("사용 가능한 해양 환경 관측 데이터가 없습니다.");
     }
 
     public MarineEnvironmentResponse getManualOverride() {
@@ -42,8 +42,11 @@ public class EnvironmentService {
                 "waveHeight", String.valueOf(request.waveHeight()),
                 "visibility", String.valueOf(request.visibility()),
                 "windDirection", String.valueOf(request.windDirection()),
+                "waveDirection", String.valueOf(request.waveDirection()),
+                "wavePeriod", String.valueOf(request.wavePeriod()),
                 "tideLevel", String.valueOf(request.tideLevel()),
                 "enabled", "true"
+
         );
         cacheService.setManualOverride(data);
     }
@@ -54,6 +57,8 @@ public class EnvironmentService {
                 parseDouble(data, "windSpeed"),
                 parseDouble(data, "windDirection"),
                 parseDouble(data, "visibility"),
+                parseDouble(data, "waveDirection"),
+                parseDouble(data, "wavePeriod"),
                 parseInt(data, "tideLevel"),
                 isManual
         );

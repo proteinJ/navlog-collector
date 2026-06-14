@@ -50,13 +50,14 @@ khoa:
 kma:
   service-key: ${KMA_API_KEY}
   base-url: ${KMA_API_URL}
+  station-id: ${KMA_STATION_ID}
 
 # =========================
 # 국립해양조사원 수심
 # =========================
 depth:
   api-key: ${DEPTH_API_KEY}
-  base-url: ${DEPTH_API_URL:https://apis.data.go.kr/1192136/waterDepth/GetWaterDepthApiService}
+  base-url: ${DEPTH_API_URL}
   #수심 API의 페이지당 최대 조회 개수
   page-size: 300
 

@@ -14,22 +14,24 @@ import java.time.format.DateTimeFormatter;
 
 
 
-
 @Component
 public class KmaWeatherApiClient implements WeatherApiClient{
 
     private final RestClient restClient;
     private final String apiUrl;
     private final String apiKey;
+    private final String stationId;
 
     public KmaWeatherApiClient(
             RestClient.Builder builder,
             @Value("${kma.base-url}") String apiUrl,
-            @Value("${kma.service-key}") String apiKey
+            @Value("${kma.service-key}") String apiKey,
+            @Value("${kma.station-id}") String stationId
     ){
         this.restClient = builder.build();
         this.apiUrl = apiUrl;
         this.apiKey = apiKey;
+        this.stationId = stationId;
     }
 
     @Override
@@ -39,7 +41,7 @@ public class KmaWeatherApiClient implements WeatherApiClient{
 
         String uri = UriComponentsBuilder.fromUriString(apiUrl)
                 .queryParam("tm", currentTime)
-                .queryParam("stn",0)
+                .queryParam("stn", stationId)
                 .queryParam("help",1)
                 .queryParam("authKey", apiKey)
                 .build()
@@ -65,11 +67,15 @@ public class KmaWeatherApiClient implements WeatherApiClient{
         Double windDirection = Double.parseDouble(values[2]);
         Double windSpeed = Double.parseDouble(values[3]);
         Double waveHeight = Double.parseDouble(values[13]);
+        Double waveDirection = Double.parseDouble(values[16]);
+        Double wavePeriod = Double.parseDouble(values[15]);
 
         return new WeatherObservation(
                 waveHeight,
                 windSpeed,
-                windDirection
+                windDirection,
+                waveDirection,
+                wavePeriod
         ); // tideLevel을 따로 관리하고 있어 제거
 
     }
