@@ -52,7 +52,9 @@ public class KmaWeatherApiClient implements WeatherApiClient{
                 .retrieve()
                 .body(String.class);
 
-        System.out.println(response);
+        if (response == null || response.isBlank()) {
+            throw new IllegalStateException("KMA 응답이 비어 있습니다.");
+        }
 
         String dataLine = response.lines()
                 .map(String::trim)

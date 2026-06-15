@@ -43,6 +43,7 @@ server:
 khoa:
   api-key: ${KHOA_API_KEY}
   base-url: ${KHOA_API_URL}
+  obs-code: ${KHOA_OBS_CODE:DT_0029}
 
 # =========================
 # 기상청(KMA)
@@ -81,7 +82,7 @@ simulation:
 # =========================
 weather:
   cache-ttl-minutes: 60
-  scheduler-cron: "* * * * * *"
+  scheduler-cron: "${WEATHER_SCHEDULER_CRON:0 */10 * * * *}"
 
 logging:
   level:

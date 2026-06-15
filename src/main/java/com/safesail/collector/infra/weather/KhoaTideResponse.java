@@ -5,18 +5,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public record KhoaTideResponse(
-        Result result
+        Header header,
+        Body body
 ) {
-    public record Result(
-            List<Data> data
-    ){}
+    public record Header(
+            String resultCode,
+            String resultMsg
+    ) {
+    }
 
-    public record Data(
-        @JsonProperty("record_time")
-        String recordTime,
+    public record Body(
+            Items items
+    ) {
+    }
 
-        @JsonProperty("tide_level")
-        String tideLevel
-    ){}
+    public record Items(
+            List<Item> item
+    ) {
+    }
 
+    public record Item(
+            @JsonProperty("obsrvnDt")
+            String observedAt,
+
+            @JsonProperty("bscTdlvHgt")
+            Double tideLevel
+    ) {
+    }
 }
